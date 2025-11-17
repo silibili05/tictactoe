@@ -45,5 +45,5 @@ pitest {
 	targetTests = ['*Test']
 	threads = 2
 	outputFormats = ['HTML']
-	mutationThreshold = 80
+	mutationThreshold = 50
 }

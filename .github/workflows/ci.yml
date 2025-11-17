@@ -1,0 +1,35 @@
+name: ci
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build-test-mutation:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up JDK
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: gradle
+
+      - name: Gradle Build (Tests, JaCoCo, PITest)
+        run: ./gradlew clean test jacocoTestReport jacocoTestCoverageVerification pitest --no-daemon
+        env:
+          GRADLE_OPTS: -Dorg.gradle.jvmargs=-Xmx2g
+
+      - name: Artefakte hochladen (Reports)
+        uses: actions/upload-artifact@v4
+        with:
+          name: reports
+          path: |
+            build/reports/tests
+            build/reports/jacoco/test/html
+            build/reports/pitest
+            build/jacoco/test.exec
+            build/reports/jacoco/test/jacocoTestReport.xml

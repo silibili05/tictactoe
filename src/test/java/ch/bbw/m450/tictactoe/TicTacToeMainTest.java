@@ -1,11 +1,12 @@
 package ch.bbw.m450.tictactoe;
 
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -86,4 +87,40 @@ public class TicTacToeMainTest {
         var result = TicTacToeMain.isWin(board, color);
         assertThat(result).isEqualTo(expected);
     }
+
+    static class SequencePlayer implements TicTacToePlayer {
+        private final int[] moves;
+        private int idx = 0;
+        SequencePlayer(int... moves) { this.moves = moves; }
+        @Override
+        public int play(Stone[] board, Stone currentColor) {
+            return moves[idx++];
+        }
+    }
+
+    @Test
+    void playTest() {
+        var x = new SequencePlayer(0, 1, 2);
+        var o = new SequencePlayer(3, 4);
+        var result = TicTacToeMain.play(x, o);
+        assertThat(result).isEqualTo(TicTacToePlayer.Stone.CROSS);
+    }
+
+    @Test
+    void playThrowsIllegalArgumentException() {
+        var p = new SequencePlayer(0);
+        assertThatThrownBy(() -> TicTacToeMain.play(p, p))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("players must differ");
+    }
+
+    @Test
+    void playThrowsIllegalStateException() {
+        var x = new SequencePlayer(0, 1, 2);
+        var o = new SequencePlayer(0); // ungültig: Feld 0 schon von X belegt
+        assertThatThrownBy(() -> TicTacToeMain.play(x, o))
+                .isInstanceOf(IllegalStateException.class)
+                .hasMessageContaining("cannot play");
+    }
+
 }

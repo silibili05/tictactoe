@@ -1,5 +1,8 @@
 package ch.bbw.m450.tictactoe;
 
+import ch.bbw.m450.tictactoe.players.HumanPlayer;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -8,6 +11,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -117,10 +122,30 @@ public class TicTacToeMainTest {
     @Test
     void playThrowsIllegalStateException() {
         var x = new SequencePlayer(0, 1, 2);
-        var o = new SequencePlayer(0); // ungültig: Feld 0 schon von X belegt
+        var o = new SequencePlayer(0);
         assertThatThrownBy(() -> TicTacToeMain.play(x, o))
                 .isInstanceOf(IllegalStateException.class)
                 .hasMessageContaining("cannot play");
     }
 
+    private InputStream originalIn;
+
+    @BeforeEach
+    void backupIn() {
+        originalIn = System.in;
+    }
+
+    @AfterEach
+    void restoreIn() {
+        System.setIn(originalIn);
+    }
+
+    @Test
+    void akzeptiertErstenGueltigenZug() {
+        System.setIn(new ByteArrayInputStream("4\n".getBytes()));
+        TicTacToePlayer p = new HumanPlayer();
+        TicTacToePlayer.Stone[] board = new TicTacToePlayer.Stone[9];
+        int move = p.play(board, TicTacToePlayer.Stone.CROSS);
+        assertThat(move).isEqualTo(4);
+    }
 }

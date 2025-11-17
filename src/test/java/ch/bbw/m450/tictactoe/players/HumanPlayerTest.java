@@ -9,7 +9,6 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class HumanPlayerTest {
 
@@ -34,4 +33,6 @@ public class HumanPlayerTest {
         int move = p.play(board, TicTacToePlayer.Stone.CROSS);
         assertThat(move).isEqualTo(4);
     }
+
+
 }

@@ -10,7 +10,7 @@ import java.io.InputStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class HumanPlayerTest {
+public class HumanPlayerTest { //made by myself
 
 
     private InputStream originalIn;

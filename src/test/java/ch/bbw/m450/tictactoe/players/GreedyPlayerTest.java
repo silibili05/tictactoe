@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.*;
 
-class GreedyPlayerTest {
+class GreedyPlayerTest { //All made by myself
 
     private final GreedyPlayer player = new GreedyPlayer();
 
